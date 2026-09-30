@@ -230,7 +230,7 @@ class Printer:
 
     def get_filament_sensors(self):
         if self.sensors is None:
-            self.sensors = list(self.get_config_section_list("filament_switch_sensor "))
+            self.sensors = list(self.get_config_section_list("standard_spdt "))
             self.sensors.extend(iter(self.get_config_section_list("filament_motion_sensor ")))
         return self.sensors
 

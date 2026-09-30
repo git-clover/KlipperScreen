@@ -19,6 +19,7 @@
     text-shadow: none;
     box-shadow: none;
     border: 0;
+    font-family: "Pretendard";
 }
 
 button:disabled {
