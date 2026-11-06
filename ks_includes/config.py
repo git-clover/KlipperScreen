@@ -138,7 +138,10 @@ class KlipperScreenConfig:
     def create_translations(self):
         lang_path = os.path.join(klipperscreendir, "ks_includes", "locales")
         self.lang_list = [
-            d for d in os.listdir(lang_path) if not os.path.isfile(os.path.join(lang_path, d))
+            d
+            for d in os.listdir(lang_path)
+            if os.path.isdir(os.path.join(lang_path, d))
+            and os.path.isdir(os.path.join(lang_path, d, "LC_MESSAGES"))
         ]
         self.lang_list.sort()
         for lng in self.lang_list:
@@ -335,6 +338,7 @@ class KlipperScreenConfig:
         self.configurable_options = [
             {
                 "theme": {
+                    "category": _("Appearance"),
                     "section": "main",
                     "name": _("Icon Theme"),
                     "type": "dropdown",
@@ -346,6 +350,7 @@ class KlipperScreenConfig:
             },
             {
                 "print_estimate_method": {
+                    "category": _("Printing"),
                     "section": "main",
                     "name": _("Estimated Time Method"),
                     "type": "dropdown",
@@ -361,6 +366,7 @@ class KlipperScreenConfig:
             },
             {
                 "screen_blanking": {
+                    "category": _("Display"),
                     "section": "main",
                     "name": _("Screen Power Off Time"),
                     "type": "dropdown",
@@ -372,6 +378,7 @@ class KlipperScreenConfig:
             },
             {
                 "screen_blanking_printing": {
+                    "category": _("Display"),
                     "section": "main",
                     "name": _("Screen Power Off Time") + " (" + _("Printing") + ")",
                     "type": "dropdown",
@@ -383,6 +390,7 @@ class KlipperScreenConfig:
             },
             {
                 "24htime": {
+                    "category": _("Appearance"),
                     "section": "main",
                     "name": _("24 Hour Time"),
                     "type": "binary",
@@ -392,6 +400,7 @@ class KlipperScreenConfig:
             },
             {
                 "side_shortcut_target": {
+                    "category": _("Behaviour"),
                     "section": "main",
                     "name": _("Action bar Shortcut"),
                     "type": "dropdown",
@@ -408,6 +417,7 @@ class KlipperScreenConfig:
             },
             {
                 "font_size": {
+                    "category": _("Appearance"),
                     "section": "main",
                     "name": _("Font Size"),
                     "type": "dropdown",
@@ -425,6 +435,7 @@ class KlipperScreenConfig:
             },
             {
                 "confirm_estop": {
+                    "category": _("Behaviour"),
                     "section": "main",
                     "name": _("Confirm Emergency Stop"),
                     "type": "binary",
@@ -434,6 +445,7 @@ class KlipperScreenConfig:
             },
             {
                 "shutdown_action": {
+                    "category": _("Behaviour"),
                     "section": "main",
                     "name": _("Shutdown Action"),
                     "type": "dropdown",
@@ -452,6 +464,7 @@ class KlipperScreenConfig:
             },
             {
                 "reboot_action": {
+                    "category": _("Behaviour"),
                     "section": "main",
                     "name": _("Restart Action"),
                     "type": "dropdown",
@@ -470,6 +483,7 @@ class KlipperScreenConfig:
             },
             {
                 "only_heaters": {
+                    "category": _("Appearance"),
                     "section": "main",
                     "name": _("Hide sensors in Temp."),
                     "type": "binary",
@@ -480,6 +494,7 @@ class KlipperScreenConfig:
             },
             {
                 "use_dpms": {
+                    "category": _("Display"),
                     "section": "main",
                     "name": _("Screen DPMS"),
                     "type": "binary",
@@ -492,6 +507,7 @@ class KlipperScreenConfig:
             },
             {
                 "autoclose_popups": {
+                    "category": _("Behaviour"),
                     "section": "main",
                     "name": _("Auto-close notifications"),
                     "type": "binary",
@@ -501,6 +517,7 @@ class KlipperScreenConfig:
             },
             {
                 "show_heater_power": {
+                    "category": _("Appearance"),
                     "section": "main",
                     "name": _("Show Heater Power"),
                     "type": "binary",
@@ -511,6 +528,7 @@ class KlipperScreenConfig:
             },
             {
                 "show_scroll_steppers": {
+                    "category": _("Appearance"),
                     "section": "main",
                     "name": _("Show Scrollbars Buttons"),
                     "type": "binary",
@@ -521,6 +539,7 @@ class KlipperScreenConfig:
             },
             {
                 "auto_open_extrude": {
+                    "category": _("Printing"),
                     "section": "main",
                     "name": _("Auto-open Extrude On Pause"),
                     "type": "binary",
@@ -530,6 +549,7 @@ class KlipperScreenConfig:
             },
             {
                 "show_cursor": {
+                    "category": _("Appearance"),
                     "section": "main",
                     "name": _("Show cursor"),
                     "type": "binary",
@@ -540,6 +560,7 @@ class KlipperScreenConfig:
             },
             {
                 "screensaver_wake_delay": {
+                    "category": _("Display"),
                     "section": "main",
                     "name": _("Screen wake delay"),
                     "type": "dropdown",
@@ -558,6 +579,7 @@ class KlipperScreenConfig:
             },
             {
                 "enable_addons": {
+                    "category": _("Others"),
                     "section": "main",
                     "name": _("Enable Add-ons"),
                     "type": "binary",
@@ -808,6 +830,47 @@ class KlipperScreenConfig:
 
     def get_lang(self):
         return self.lang
+
+    def get_language_name(self, lang):
+        """Return the native (endonym) name for a language code.
+
+        Falls back to the code itself for locales without a known name.
+        """
+        names = {
+            "ar": "العربية",
+            "bg": "Български",
+            "cs": "Čeština",
+            "da": "Dansk",
+            "de": "Deutsch",
+            "de_formal": "Deutsch (höflich)",
+            "en": "English",
+            "es": "Español",
+            "et": "Eesti",
+            "fa": "فارسی",
+            "fr": "Français",
+            "he": "עברית",
+            "hr": "Hrvatski",
+            "hu": "Magyar",
+            "it": "Italiano",
+            "jp": "日本語",
+            "ko": "한국어",
+            "lt": "Lietuvių",
+            "nl": "Nederlands",
+            "pl": "Polski",
+            "pt": "Português",
+            "pt_BR": "Português (Brasil)",
+            "rs": "Srpski",
+            "ru": "Русский",
+            "sk": "Slovenčina",
+            "sl": "Slovenščina",
+            "sv": "Svenska",
+            "tr": "Türkçe",
+            "uk": "Українська",
+            "vi": "Tiếng Việt",
+            "zh_CN": "简体中文",
+            "zh_TW": "繁體中文",
+        }
+        return names.get(lang, lang)
 
     def get_main_config(self):
         return self.config["main"]
